@@ -1,43 +1,45 @@
 local repStorage = game:GetService("ReplicatedStorage")
-	local karakter = game:GetService("Players").LocalPlayer
-	local toplar = game:GetService("Workspace").Balls
-	
-	local function topu_bul()
-		local top
-		for i, v in pairs(toplar:GetChildren()) do
-			if v:GetAttribute("realBall") == true then
-				top = v
-			end
+local karakter = game:GetService("Players").LocalPlayer
+local toplar = game:GetService("Workspace").Balls
+
+
+local function topu_bul()
+	local top
+	for i, v in pairs(toplar:GetChildren()) do
+		if v:GetAttribute("realBall") == true then
+			top = v
 		end
-		return top
 	end
-	
-	local function target_misin()
-		local top = topu_bul()
-		if top and top:GetAttribute("target") == karakter.Name then
-			return true
-		end
-		return false
+	return top
+end
+
+local function target_misin()
+	local top = topu_bul()
+	if top and top:GetAttribute("target") == karakter.Name then
+		return true
 	end
-	
-	local function top_detect()
-	    local Ball = topu_bul()
-	    if Ball then
-	        local BallVelocity,BallPosition,PlayerPosition,Distance = Ball.Velocity.Magnitude, Ball.Position, karakter.Character.HumanoidRootPart.Position, (BallPosition - PlayerPosition).Magnitude
-	        local PingAccountability = BallVelocity * (game.Stats.Network.ServerStatsItem["Data Ping"]:GetValue() / 1000) -- didnt make this ping thing
-	        Distance -= PingAccountability
-	        Distance -= _G.distance
-	        local Hit = Distance / BallVelocity
-	        if Hit <= 0.5 then
-	            return true
-	        end
-	    end
-	    return false
-	end
-	
-	local function topa_vur()
-	    if target_misin() and top_detect() then
-		    repStorage.Remotes.ParryButtonPress:Fire()
-		    print('hit')
-	    end
-	end
+	return false
+end
+
+
+local function top_detect()
+    local Ball = topu_bul()
+    if Ball then
+        local BallVelocity,BallPosition,PlayerPosition,Distance = Ball.Velocity.Magnitude, Ball.Position, karakter.Character.HumanoidRootPart.Position, (BallPosition - PlayerPosition).Magnitude
+        local PingAccountability = BallVelocity * (game.Stats.Network.ServerStatsItem["Data Ping"]:GetValue() / 1000) -- didnt make this ping thing
+        Distance -= PingAccountability
+        Distance -= 3.7
+        local Hit = Distance / BallVelocity
+        if Hit <= 0.5 then
+            return true
+        end
+    end
+    return false
+end
+
+local function topa_vur()
+    if target_misin() and top_detect() then
+	    game:GetService("ReplicatedStorage").Remotes.ParryButtonPress:Fire()
+	    print('hit')
+    end
+end
